@@ -35,7 +35,7 @@ class PIDNet(nn.Module):
         self.layer2 = self._make_layer(BasicBlock, planes, planes * 2, m, stride=2)
         self.layer3 = self._make_layer(BasicBlock, planes * 2, planes * 4, n, stride=2)
         self.layer4 = self._make_layer(BasicBlock, planes * 4, planes * 8, n, stride=2)
-        self.layer5 =  self._make_layer(Bottleneck, planes * 8, planes * 8, 2, stride=2)
+        self.layer5 = self._make_layer(Bottleneck, planes * 8, planes * 8, 2, stride=2)
         
         # P Branch
         self.compression3 = nn.Sequential(
@@ -135,6 +135,8 @@ class PIDNet(nn.Module):
 
     def forward(self, x):
 
+        input_size = x.shape
+
         x = self.conv1(x)
         x = self.layer1(x)
         x = self.relu(self.layer2(self.relu(x)))
@@ -150,8 +152,6 @@ class PIDNet(nn.Module):
                         self.diff3(x),
                         size=[height_output, width_output],
                         mode='bilinear', align_corners=algc)
-        if self.augment:
-            temp_p = x_
         
         x = self.relu(self.layer4(x))
         x_ = self.layer4_(self.relu(x_))
@@ -162,8 +162,6 @@ class PIDNet(nn.Module):
                         self.diff4(x),
                         size=[height_output, width_output],
                         mode='bilinear', align_corners=algc)
-        if self.augment:
-            temp_d = x_d
             
         x_ = self.layer5_(self.relu(x_))
         x_d = self.layer5_d(self.relu(x_d))
@@ -173,13 +171,9 @@ class PIDNet(nn.Module):
                         mode='bilinear', align_corners=algc)
 
         x_ = self.final_layer(self.dfm(x_, x, x_d))
-
-        if self.augment: 
-            x_extra_p = self.seghead_p(temp_p)
-            x_extra_d = self.seghead_d(temp_d)
-            return [x_extra_p, x_, x_extra_d]
-        else:
-            return x_      
+        x_ = F.interpolate(x_, size=input_size[-2:], mode='bilinear', align_corners=False)
+        
+        return x_
 
 def get_seg_model(cfg, imgnet_pretrained):
     
