@@ -13,6 +13,9 @@ import torch
 import torch.nn.functional as F
 from PIL import Image
 
+import time
+
+
 import torch.onnx
 import onnx
 import onnxruntime
@@ -103,7 +106,7 @@ def transform2oxnn(args):
     model.eval()
 
     with torch.no_grad():
-        dummy_input = np.random.rand(370,1226,3) * 255
+        dummy_input = np.random.rand(376,1241,3) * 255
         dummy_input = dummy_input.transpose((2, 0, 1)).copy()
         dummy_input = torch.from_numpy(dummy_input).unsqueeze(0).cuda()       
         dummy_input = dummy_input.float()
@@ -113,7 +116,7 @@ def transform2oxnn(args):
 
         torch.onnx.export(model,
                         dummy_input,
-                            "PIDNet_s_cityscapes.onnx",
+                            "PIDNet_s_cityscapes_00.onnx",
                             verbose=False,
                             input_names=input_names,
                             output_names=output_names,
@@ -144,8 +147,12 @@ def testonnx(args):
         img = torch.from_numpy(img).unsqueeze(0).cuda()
 
         # compute ONNX Runtime output prediction
+        
         ort_inputs = {ort_session.get_inputs()[0].name: to_numpy(img)}
+        start = time.time()
         pred = ort_session.run(None, ort_inputs)[0]
+        end = time.time()
+        print("Time: ", end - start)
 
 
         print("Bigger than 1: ", np.count_nonzero(pred>1) )
@@ -168,6 +175,46 @@ def testonnx(args):
 
 
 def testPID(args):
+    print("args.r+'*'+args.t: ", args.r+'*'+args.t)
+    
+    images_list = glob.glob(args.r+'*'+args.t)
+    print("images list: ", images_list)
+    sv_path = args.r+'outputs/'
+
+    model = models.pidnet.get_pred_model(args.a, 19 if args.c else 11)
+    model = load_pretrained(model, args.p).cuda()
+    model.eval()
+    h = 0
+    with torch.no_grad():
+        for img_path in images_list:
+            img_name = img_path.split("\\")[-1]
+
+            print("img_name: ", img_name)
+
+            img = cv2.imread(os.path.join(args.r, img_name),
+                               cv2.IMREAD_COLOR)
+            sv_img = np.zeros_like(img).astype(np.uint8)
+            img = input_transform(img)
+            img = img.transpose((2, 0, 1)).copy()
+            img = torch.from_numpy(img).unsqueeze(0).cuda()
+            pred = model(img)
+
+            pred = F.interpolate(pred, size=img.size()[-2:], 
+                                 mode='bilinear', align_corners=True)
+
+            pred = torch.argmax(pred, dim=1).squeeze(0).cpu().numpy()
+            
+            for i, color in enumerate(color_map):
+                for j in range(3):
+                    sv_img[:,:,j][pred==i] = color_map[i][j]
+            sv_img = Image.fromarray(sv_img)
+            
+            if not os.path.exists(sv_path):
+                os.mkdir(sv_path)
+            sv_img.save(sv_path+str(h)+'.png')
+            h += 1
+
+def testPID_prob(args):
     images_list = glob.glob(args.r+'*'+args.t)
     sv_path = args.r+'outputs/'
 
@@ -185,10 +232,10 @@ def testPID(args):
             img = img.transpose((2, 0, 1)).copy()
             img = torch.from_numpy(img).unsqueeze(0).cuda()
             pred = model(img)
-            print("Bigger than 1: ", np.count_nonzero(pred.cpu()<0) )
-            pred = F.interpolate(pred, size=img.size()[-2:], 
-                                 mode='bilinear', align_corners=True)
-            print("Bigger than 1: ", np.count_nonzero(pred.cpu()>1) )
+
+            pred_min = torch.min(pred, dim=1).squeeze(0).cpu().numpy()
+
+
             pred = torch.argmax(pred, dim=1).squeeze(0).cpu().numpy()
             
             for i, color in enumerate(color_map):
@@ -204,13 +251,14 @@ def testPID(args):
 if __name__ == '__main__':
     
     
-
+    print("stared")
     args = parse_args()
 
     #transform2torch(args)
-    #transform2oxnn(args)
+    transform2oxnn(args)
     #testonnx(args)
-    testPID(args)
+    #testPID(args)
+    #testPID_prob(args)
 
     """
     args = parse_args()

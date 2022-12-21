@@ -171,6 +171,7 @@ class PIDNet(nn.Module):
                         mode='bilinear', align_corners=algc)
 
         x_ = self.final_layer(self.dfm(x_, x, x_d))
+        x_ = torch.softmax(x_, dim=1)
         x_ = F.interpolate(x_, size=input_size[-2:], mode='bilinear', align_corners=False)
         
         return x_
