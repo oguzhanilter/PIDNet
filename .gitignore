@@ -1,0 +1,8 @@
+output/
+*.pt
+*.pth.tar
+__pycache__/
+log/
+data/kitti/*
+data/camvid/*
+data/cityscapes/*
