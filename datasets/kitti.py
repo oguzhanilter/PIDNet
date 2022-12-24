@@ -37,7 +37,7 @@ class Kitti(BaseDataset):
 
         self.multi_scale = multi_scale
         self.flip = flip
-        
+
         self.img_list = [line.strip().split() for line in open(root+list_path)]
 
         self.files = self.read_files()
@@ -99,7 +99,7 @@ class Kitti(BaseDataset):
         image = cv2.imread(os.path.join(self.root,'kitti',item["img"]),
                            cv2.IMREAD_COLOR)
         # dim = (self.crop_size[1], self.crop_size[0])
-        # image = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)                   
+        # image = cv2.resize(image, dim)                   
         size = image.shape
 
         if 'test' in self.list_path:
