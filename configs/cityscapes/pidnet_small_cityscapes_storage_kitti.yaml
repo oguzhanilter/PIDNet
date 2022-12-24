@@ -9,15 +9,16 @@ WORKERS: 6
 PRINT_FREQ: 10
 
 DATASET:
-  DATASET: kitti
-  ROOT: data/
-  TEST_SET: 'list/kitti/val.lst'
-  TRAIN_SET: 'list/kitti/train.lst'
+  DATASET: cityscapes
+  ROOT: /cluster/scratch/oilter/data/
+  TEST_SET: 'list/kitti/train_long.lst'
+  TRAIN_SET: 'list/kitti/train_long.lst'
   NUM_CLASSES: 19
 MODEL:
   NAME: pidnet_small
   NUM_OUTPUTS: 2
   PRETRAINED: "pretrained_models/imagenet/PIDNet_S_ImageNet.pth.tar"
+# 131072
 LOSS:
   USE_OHEM: true
   OHEMTHRES: 0.9
@@ -26,10 +27,10 @@ LOSS:
   SB_WEIGHTS: 1.0
 TRAIN:
   IMAGE_SIZE:
-  - 1242
-  - 375
-  BASE_SIZE: 1242
-  BATCH_SIZE_PER_GPU: 4
+  - 1024
+  - 1024
+  BASE_SIZE: 2048
+  BATCH_SIZE_PER_GPU: 6
   SHUFFLE: true
   BEGIN_EPOCH: 0
   END_EPOCH: 484
@@ -45,10 +46,10 @@ TRAIN:
   SCALE_FACTOR: 16
 TEST:
   IMAGE_SIZE:
-  - 1242
-  - 375
-  BASE_SIZE: 1242
-  BATCH_SIZE_PER_GPU: 1
+  - 2048
+  - 1024
+  BASE_SIZE: 2048
+  BATCH_SIZE_PER_GPU: 6
   FLIP_TEST: false
   MULTI_SCALE: false
   MODEL_FILE: ''

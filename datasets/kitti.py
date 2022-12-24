@@ -29,6 +29,8 @@ class Kitti(BaseDataset):
         super(Kitti, self).__init__(ignore_label, base_size,
                 crop_size, scale_factor, mean, std,)
 
+        self.crop_size = crop_size
+
         self.root = root
         self.list_path = list_path
         self.num_classes = num_classes
@@ -96,6 +98,8 @@ class Kitti(BaseDataset):
         name = item["name"]
         image = cv2.imread(os.path.join(self.root,'kitti',item["img"]),
                            cv2.IMREAD_COLOR)
+        # dim = (self.crop_size[1], self.crop_size[0])
+        # image = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)                   
         size = image.shape
 
         if 'test' in self.list_path:
