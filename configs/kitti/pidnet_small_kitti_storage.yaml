@@ -2,22 +2,23 @@ CUDNN:
   BENCHMARK: true
   DETERMINISTIC: false
   ENABLED: true
-GPUS: (0,)
+GPUS: (0,1)
 OUTPUT_DIR: '/cluster/scratch/oilter/output'
 LOG_DIR: 'log'
-WORKERS: 1
+WORKERS: 6
 PRINT_FREQ: 10
 
 DATASET:
   DATASET: kitti
   ROOT: /cluster/scratch/oilter/data/
-  TEST_SET: 'list/kitti/val.lst'
+  TEST_SET: 'list/kitti/train.lst'
   TRAIN_SET: 'list/kitti/train.lst'
   NUM_CLASSES: 19
 MODEL:
   NAME: pidnet_small
   NUM_OUTPUTS: 2
-  PRETRAINED: "pretrained_models/imagenet/PIDNet_S_ImageNet.pth.tar"
+  PRETRAINED: "/cluster/home/oilter/PIDNet/pretrained_models/cityscapes/PIDNet_S_Cityscapes_test.pt"
+  
 LOSS:
   USE_OHEM: true
   OHEMTHRES: 0.9
@@ -26,10 +27,10 @@ LOSS:
   SB_WEIGHTS: 1.0
 TRAIN:
   IMAGE_SIZE:
-  - 1024
-  - 1024
-  BASE_SIZE: 2048
-  BATCH_SIZE_PER_GPU: 2
+  - 1224
+  - 370
+  BASE_SIZE: 1224
+  BATCH_SIZE_PER_GPU: 4
   SHUFFLE: true
   BEGIN_EPOCH: 0
   END_EPOCH: 484
@@ -42,12 +43,12 @@ TRAIN:
   FLIP: true
   MULTI_SCALE: true
   IGNORE_LABEL: 255
-  SCALE_FACTOR: 4
+  SCALE_FACTOR: 16
 TEST:
   IMAGE_SIZE:
-  - 2048
-  - 1024
-  BASE_SIZE: 1242
+  - 1224
+  - 370
+  BASE_SIZE: 1224
   BATCH_SIZE_PER_GPU: 1
   FLIP_TEST: false
   MULTI_SCALE: false
