@@ -98,8 +98,8 @@ class Kitti(BaseDataset):
         name = item["name"]
         image = cv2.imread(os.path.join(self.root,'kitti',item["img"]),
                            cv2.IMREAD_COLOR)
-        dim = (self.crop_size[1], self.crop_size[0])
-        image = cv2.resize(image, dim)                   
+        # dim = (self.crop_size[1], self.crop_size[0])
+        # image = cv2.resize(image, dim)                   
         size = image.shape
 
         if 'test' in self.list_path:

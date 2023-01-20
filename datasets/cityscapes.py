@@ -51,7 +51,10 @@ class Cityscapes(BaseDataset):
                               19: 6, 20: 7, 21: 8, 22: 9, 23: 10, 24: 11,
                               25: 12, 26: 13, 27: 14, 28: 15, 
                               29: ignore_label, 30: ignore_label, 
-                              31: 16, 32: 17, 33: 18}
+                              31: 16, 32: 17, 33: 18,
+                              34: 16, 35: 17, 36: 18,
+                              37: 16, 38: 17, 39: 18,
+                              40: 16, 41: 17, 42: 18 }
         self.class_weights = torch.FloatTensor([0.8373, 0.918, 0.866, 1.0345, 
                                         1.0166, 0.9969, 0.9754, 1.0489,
                                         0.8786, 1.0023, 0.9539, 0.9843, 
@@ -74,6 +77,7 @@ class Cityscapes(BaseDataset):
             for item in self.img_list:
                 image_path, label_path = item
                 name = os.path.splitext(os.path.basename(label_path))[0]
+
                 files.append({
                     "img": image_path,
                     "label": label_path,
@@ -110,6 +114,7 @@ class Cityscapes(BaseDataset):
 
         image, label, edge = self.gen_sample(image, label, 
                                 self.multi_scale, self.flip, edge_size=self.bd_dilate_size)
+
 
         return image.copy(), label.copy(), edge.copy(), np.array(size), name
 
