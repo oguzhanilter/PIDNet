@@ -168,8 +168,10 @@ def to_numpy(tensor):
 
 def segment_folder_onnx(args):
 
-    file1 = open(args.f, 'r')
-    directories  = file1.readlines()
+    file = open(args.f, 'r')
+    directories  = file.read().splitlines()
+
+    print(directories)
 
     ort_session = onnxruntime.InferenceSession("PIDNet_s_kitti_04.onnx")
 
@@ -191,7 +193,7 @@ def segment_folder_onnx(args):
 
             # cv2.imshow("asd", img)
             # cv2.waitKey(0)
-            
+
             img = input_transform(img)
 
             img = img.transpose((2, 0, 1)).copy()
