@@ -238,6 +238,10 @@ if __name__ == '__main__':
     #torch.cuda.set_device('cuda:0')
     model.to(device)
     #torch.cuda.set_device('cuda')
+    device = torch.device('cuda')
+    model = get_pred_model(name='pidnet_s', num_classes=19)
+    model.eval()
+    model.to(device)
     iterations = None
     
     input = torch.randn(1, 3, 1024, 2048).cuda()
