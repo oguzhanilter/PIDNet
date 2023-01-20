@@ -6,3 +6,9 @@ log/
 data/kitti/*
 data/camvid/*
 data/cityscapes/*
+*.onnx
+*.png
+*.pt
+*.yaml
+__pycache__
+.vscode
