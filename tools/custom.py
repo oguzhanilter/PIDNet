@@ -221,7 +221,7 @@ def segment_folder_pytorch(args):
     print(directories)
 
     model = models.pidnet.get_pred_model('pidnet-s', 19)
-    model = load_pretrained(model, '../pretrained_models/kitti/PIDNet_S_KITTI.pt').cuda()
+    model = load_pretrained(model, '/cluster/home/oilter/PIDNet/pretrained_models/kitti/PIDNet_S_KITTI.pt').cuda()
     model.eval()
 
     for dir in directories:

@@ -1,0 +1,51 @@
+Sender: LSF System <lsfadmin@eu-g2-05>
+Subject: Job 253289272: <./run.sh> in cluster <euler> Exited
+
+Job <./run.sh> was submitted from host <eu-login-42> by user <oilter> in cluster <euler> at Wed Jan 25 18:57:51 2023
+Job was executed on host(s) <16*eu-g2-05>, in queue <gpu.24h>, as user <oilter> in cluster <euler> at Wed Jan 25 18:59:00 2023
+</cluster/home/oilter> was used as the home directory.
+</cluster/home/oilter/PIDNet> was used as the working directory.
+Started at Wed Jan 25 18:59:00 2023
+Terminated at Wed Jan 25 18:59:06 2023
+Results reported at Wed Jan 25 18:59:06 2023
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+./run.sh
+------------------------------------------------------------
+
+Exited with exit code 1.
+
+Resource usage summary:
+
+    CPU time :                                   2.61 sec.
+    Max Memory :                                 464 MB
+    Average Memory :                             -
+    Total Requested Memory :                     160000.00 MB
+    Delta Memory :                               159536.00 MB
+    Max Swap :                                   -
+    Max Processes :                              -
+    Max Threads :                                -
+    Run time :                                   18 sec.
+    Turnaround time :                            75 sec.
+
+The output (if any) follows:
+
+started
+['/cluster/scratch/oilter/KITTI/sequences/00', '/cluster/scratch/oilter/KITTI/sequences/01', '/cluster/scratch/oilter/KITTI/sequences/02', '/cluster/scratch/oilter/KITTI/sequences/03', '/cluster/scratch/oilter/KITTI/sequences/04', '/cluster/scratch/oilter/KITTI/sequences/05', '/cluster/scratch/oilter/KITTI/sequences/06', '/cluster/scratch/oilter/KITTI/sequences/07', '/cluster/scratch/oilter/KITTI/sequences/08', '/cluster/scratch/oilter/KITTI/sequences/09', '/cluster/scratch/oilter/KITTI/sequences/10']
+Traceback (most recent call last):
+  File "/cluster/home/oilter/PIDNet/tools/custom.py", line 342, in <module>
+    segment_folder_pytorch(args)
+  File "/cluster/home/oilter/PIDNet/tools/custom.py", line 224, in segment_folder_pytorch
+    model = load_pretrained(model, '../pretrained_models/kitti/PIDNet_S_KITTI.pt').cuda()
+  File "/cluster/home/oilter/PIDNet/tools/custom.py", line 70, in load_pretrained
+    pretrained_dict = torch.load(pretrained, map_location='cpu')
+  File "/cluster/home/oilter/miniconda3/envs/ss/lib/python3.7/site-packages/torch/serialization.py", line 699, in load
+    with _open_file_like(f, 'rb') as opened_file:
+  File "/cluster/home/oilter/miniconda3/envs/ss/lib/python3.7/site-packages/torch/serialization.py", line 230, in _open_file_like
+    return _open_file(name_or_buffer, mode)
+  File "/cluster/home/oilter/miniconda3/envs/ss/lib/python3.7/site-packages/torch/serialization.py", line 211, in __init__
+    super(_open_file, self).__init__(open(name, mode))
+FileNotFoundError: [Errno 2] No such file or directory: '../pretrained_models/kitti/PIDNet_S_KITTI.pt'
