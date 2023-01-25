@@ -248,11 +248,11 @@ def segment_folder_pytorch(args):
             img = img.transpose((2, 0, 1)).copy()
             img = torch.from_numpy(img).unsqueeze(0).cuda()
 
-            # compute ONNX Runtime output prediction
+            # compute output prediction
             
             pred = model(img)
 
-            pred = np.argmax(pred, axis=1).squeeze(0)
+            pred = np.argmax(pred, axis=1).squeeze(0).cpu().numpy()
             pred = pred.astype(np.uint8)
 
             # cv2.imshow("asd", pred)
