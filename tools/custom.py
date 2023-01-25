@@ -213,6 +213,54 @@ def segment_folder_onnx(args):
             cv2.imwrite(sv_path+img_name, pred)
 
 
+def segment_folder_pytorch(args):
+
+    file = open(args.f, 'r')
+    directories  = file.read().splitlines()
+
+    print(directories)
+
+    model = models.pidnet.get_pred_model('pidnet-s', 19)
+    model = load_pretrained(model, '../pretrained_models/kitti/PIDNet_S_KITTI.pt').cuda()
+    model.eval()
+
+    for dir in directories:
+        
+        print(f"{dir} started")
+
+        sv_path = dir+'/semantic_image_0/'
+        if not os.path.exists(sv_path):
+            os.mkdir(sv_path)
+
+        image_path = dir+'/image_0/'
+        images_list = glob.glob(image_path + '*.png')
+       
+        for img_path in tqdm.tqdm(images_list):
+            img_name = img_path.split("/")[-1]
+
+            img = cv2.imread( img_path, cv2.IMREAD_COLOR)
+
+            # cv2.imshow("asd", img)
+            # cv2.waitKey(0)
+
+            img = input_transform(img)
+
+            img = img.transpose((2, 0, 1)).copy()
+            img = torch.from_numpy(img).unsqueeze(0).cuda()
+
+            # compute ONNX Runtime output prediction
+            
+            pred = model(img)
+
+            #pred = np.argmax(pred, axis=1).squeeze(0)
+            #pred = pred.astype(np.uint8)
+
+            # cv2.imshow("asd", pred)
+            # cv2.waitKey(0)
+
+            cv2.imwrite(sv_path+img_name, pred)
+
+
 
 def testPID(args):
     
@@ -291,7 +339,9 @@ if __name__ == '__main__':
     print("started")
     args = parse_args()
 
-    segment_folder_onnx(args)
+    segment_folder_pytorch(args)
+
+    #segment_folder_onnx(args)
 
     #transform2torch(args)
     #transform2oxnn(args)
