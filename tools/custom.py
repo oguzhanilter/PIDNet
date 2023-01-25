@@ -252,7 +252,7 @@ def segment_folder_pytorch(args):
             
             pred = model(img)
 
-            pred = np.argmax(pred, axis=1).squeeze(0).cpu().numpy()
+            pred = np.argmax(pred, axis=1).cpu().numpy().squeeze(0)
             pred = pred.astype(np.uint8)
 
             # cv2.imshow("asd", pred)
