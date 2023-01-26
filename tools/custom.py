@@ -301,12 +301,13 @@ def networkOut_folder_pytorch(args):
             # compute output prediction
             
             pred = model(img)
-            pred = pred.detach().numpy()
+            pred = pred.detach().cpu().numpy()
 
-            with open(sv_path+img_name+".yaml", 'w') as f:
-                yaml.dump(pred.tolist(), f)
+            # with open(sv_path+img_name+".yaml", 'w') as f:
+            #     yaml.dump(pred.tolist(), f)
 
-
+            s = cv2.FileStorage(sv_path+img_name+".yaml", cv2.FileStorage_WRITE)
+            s.write('network_output', pred)
             #cv2.Save("sv_path+img_name", cv2.fromarray(a))
 
 

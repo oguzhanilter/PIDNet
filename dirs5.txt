@@ -1,0 +1,6 @@
+/cluster/scratch/oilter/KITTI/sequences/05
+/cluster/scratch/oilter/KITTI/sequences/06
+/cluster/scratch/oilter/KITTI/sequences/07
+/cluster/scratch/oilter/KITTI/sequences/08
+/cluster/scratch/oilter/KITTI/sequences/09
+/cluster/scratch/oilter/KITTI/sequences/10
