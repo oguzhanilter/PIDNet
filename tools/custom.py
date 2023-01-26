@@ -301,7 +301,7 @@ def networkOut_folder_pytorch(args):
             # compute output prediction
             
             pred = model(img)
-            pred = pred.cpu().numpy()
+            pred = pred.detach().numpy()
 
             with open(sv_path+img_name+".yaml", 'w') as f:
                 yaml.dump(pred.tolist(), f)
