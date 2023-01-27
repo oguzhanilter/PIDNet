@@ -314,6 +314,7 @@ def networkOut_folder_pytorch(args):
 
             s = cv2.FileStorage(sv_path+img_name+".yaml", cv2.FileStorage_WRITE)
             s.write('network_output', pred)
+            s.release()
             #cv2.Save("sv_path+img_name", cv2.fromarray(a))
 
 
