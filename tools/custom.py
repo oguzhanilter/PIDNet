@@ -282,11 +282,17 @@ def networkOut_folder_pytorch(args):
         if not os.path.exists(sv_path):
             os.mkdir(sv_path)
 
+        already_created_files = os.listdir(sv_path)
+
+
         image_path = dir+'/image_0/'
         images_list = glob.glob(image_path + '*.png')
        
         for img_path in tqdm.tqdm(images_list):
             img_name = img_path.split("/")[-1]
+
+            if( sv_path+img_name+".yaml" in already_created_files):
+                continue
 
             img = cv2.imread( img_path, cv2.IMREAD_COLOR)
 
