@@ -9,6 +9,5 @@ data/cityscapes/*
 *.onnx
 *.png
 *.pt
-*.yaml
 __pycache__
 .vscode
