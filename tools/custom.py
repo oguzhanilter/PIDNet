@@ -102,12 +102,12 @@ def transform2torch(args):
 
 def transform2oxnn(args):
 
-    model = models.pidnet.get_pred_model(args.a, 19 if args.c else 11)
-    model = load_pretrained(model, args.p).cuda()
+    model = models.pidnet.get_pred_model('pidnet-s', 19)
+    model = load_pretrained(model, '/home/oilter/Documents/SemanticSLAM/PIDNet/pretrained_models/kitti/PIDNet_S_KITTI.pt').cuda()
     model.eval()
 
     with torch.no_grad():
-        dummy_input = np.random.rand(370,1226,3) * 255
+        dummy_input = np.random.rand(375,1242,3) * 255
         dummy_input = dummy_input.transpose((2, 0, 1)).copy()
         dummy_input = torch.from_numpy(dummy_input).unsqueeze(0).cuda()       
         dummy_input = dummy_input.float()
@@ -117,7 +117,7 @@ def transform2oxnn(args):
 
         torch.onnx.export(model,
                         dummy_input,
-                            "PIDNet_s_kitti_04.onnx",
+                            "PIDNet_s_kitti_03.onnx",
                             verbose=False,
                             input_names=input_names,
                             output_names=output_names,
@@ -404,14 +404,14 @@ if __name__ == '__main__':
     print("started")
     args = parse_args()
 
-    networkOut_folder_pytorch(args)
+    #networkOut_folder_pytorch(args)
 
     #segment_folder_pytorch(args)
 
     #segment_folder_onnx(args)
 
     #transform2torch(args)
-    #transform2oxnn(args)
+    transform2oxnn(args)
     #testonnx(args)
     #testPID(args)
     #testPID_prob(args)
