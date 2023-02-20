@@ -1,0 +1,72 @@
+/cluster/home/oilter/begin.sh: line 1: env2lmod: command not found
+Namespace(cfg='/cluster/home/oilter/PIDNet/configs/p4b/pidnet_small_p4b_storage.yaml', opts=[], seed=304)
+AUTO_RESUME: False
+CUDNN:
+  BENCHMARK: True
+  DETERMINISTIC: False
+  ENABLED: True
+DATASET:
+  DATASET: p4b
+  EXTRA_TRAIN_SET: 
+  NUM_CLASSES: 19
+  ROOT: /cluster/scratch/oilter/data/
+  TEST_SET: list/p4b/train.lst
+  TRAIN_SET: list/p4b/train.lst
+GPUS: (0, 1)
+LOG_DIR: log
+LOSS:
+  BALANCE_WEIGHTS: [0.4, 1.0]
+  CLASS_BALANCE: False
+  OHEMKEEP: 131072
+  OHEMTHRES: 0.9
+  SB_WEIGHTS: 1.0
+  USE_OHEM: True
+MODEL:
+  ALIGN_CORNERS: True
+  NAME: pidnet_small
+  NUM_OUTPUTS: 2
+  PRETRAINED: /cluster/home/oilter/PIDNet/pretrained_models/cityscapes/PIDNet_S_Cityscapes_test.pt
+OUTPUT_DIR: /cluster/scratch/oilter/output
+PIN_MEMORY: True
+PRINT_FREQ: 10
+TEST:
+  BASE_SIZE: 1920
+  BATCH_SIZE_PER_GPU: 1
+  FLIP_TEST: False
+  IMAGE_SIZE: [1920, 1080]
+  MODEL_FILE: 
+  MULTI_SCALE: False
+  OUTPUT_INDEX: 1
+TRAIN:
+  BASE_SIZE: 1920
+  BATCH_SIZE_PER_GPU: 4
+  BEGIN_EPOCH: 0
+  END_EPOCH: 484
+  EXTRA_EPOCH: 0
+  EXTRA_LR: 0.001
+  FLIP: True
+  IGNORE_LABEL: 255
+  IMAGE_SIZE: [1920, 1080]
+  LR: 0.01
+  MOMENTUM: 0.9
+  MULTI_SCALE: True
+  NESTEROV: False
+  OPTIMIZER: sgd
+  RESUME: False
+  SCALE_FACTOR: 16
+  SHUFFLE: True
+  WD: 0.0005
+WORKERS: 6
+Attention!!!
+Loaded 479 parameters!
+Over!!!
+Seeding with 304
+=> creating /cluster/scratch/oilter/output/p4b/pidnet_small_p4b_storage
+=> creating log/p4b/pidnet_small/pidnet_small_p4b_storage_2023-02-18-13-07
+Traceback (most recent call last):
+  File "/cluster/home/oilter/PIDNet/tools/train.py", line 218, in <module>
+    main()
+  File "/cluster/home/oilter/PIDNet/tools/train.py", line 85, in main
+    train_dataset = eval('datasets.'+config.DATASET.DATASET)(
+  File "<string>", line 1, in <module>
+AttributeError: module 'datasets' has no attribute 'p4b'
