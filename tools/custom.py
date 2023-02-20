@@ -55,7 +55,8 @@ def parse_args():
     parser.add_argument('--p', help='dir for pretrained model', default='../pretrained_models/cityscapes/PIDNet_L_Cityscapes_test.pt', type=str)
     parser.add_argument('--r', help='root or dir for input images', default='../samples/', type=str)
     parser.add_argument('--t', help='the format of input images (.jpg, .png, ...)', default='.png', type=str)
-    parser.add_argument('--f', help='path to the txt file that contains pathes of the directories to be converted', type=str )     
+    #parser.add_argument('--f', help='path to the txt file that contains pathes of the directories to be converted', type=str )
+    parser.add_argument('--o', help='path name', type=str )     
 
     args = parser.parse_args()
 
@@ -103,11 +104,11 @@ def transform2torch(args):
 def transform2oxnn(args):
 
     model = models.pidnet.get_pred_model('pidnet-s', 19)
-    model = load_pretrained(model, '/home/oilter/Documents/SemanticSLAM/PIDNet/pretrained_models/kitti/PIDNet_S_KITTI.pt').cuda()
+    model = load_pretrained(model, '/home/oilter/Documents/SemanticSLAM/PIDNet/pretrained_models/p4b/PIDNet_S_P4B.pt').cuda()
     model.eval()
 
     with torch.no_grad():
-        dummy_input = np.random.rand(375,1242,3) * 255
+        dummy_input = np.random.rand(1080,1920,3) * 255
         dummy_input = dummy_input.transpose((2, 0, 1)).copy()
         dummy_input = torch.from_numpy(dummy_input).unsqueeze(0).cuda()       
         dummy_input = dummy_input.float()
@@ -117,7 +118,7 @@ def transform2oxnn(args):
 
         torch.onnx.export(model,
                         dummy_input,
-                            "PIDNet_s_kitti_03.onnx",
+                            "PIDNet_s_p4b.onnx",
                             verbose=False,
                             input_names=input_names,
                             output_names=output_names,
@@ -127,9 +128,10 @@ def transform2oxnn(args):
                             )
 
 def testonnx(args):
-    images_list = glob.glob(args.r+'*'+args.t)
-    sv_path = args.r+'outputs/'
+    images_list = glob.glob(args.r+'*.png')
+    sv_path = '/cluster/scratch/oilter/segmentation/' + args.o + '/'
 
+    images_list.sort()
 
     ort_session = onnxruntime.InferenceSession("PIDNet_s_kitti_04.onnx")
 
@@ -137,7 +139,8 @@ def testonnx(args):
         return tensor.detach().cpu().numpy() if tensor.requires_grad else tensor.cpu().numpy()
 
     h = 0
-    for img_path in images_list:
+    for ttt in range(len(images_list)):
+        img_path = images_list[ttt]
         img_name = img_path.split("\\")[-1]
         img_id = os.path.split(img_name)[1]
         img = cv2.imread(os.path.join(args.r, img_name),
@@ -329,11 +332,16 @@ def networkOut_folder_pytorch(args):
 
 def testPID(args):
     
-    images_list = glob.glob(args.r+'*'+args.t)
+    args.r = '/home/oilter/Documents/SemanticSLAM/PIDNet/samples/'
+
+    images_list = glob.glob(args.r+'*'+'.jpg')
+
+    print(images_list)
+
     sv_path = args.r+'outputs/'
 
-    model = models.pidnet.get_pred_model(args.a, 19 if args.c else 11)
-    model = load_pretrained(model, args.p).cuda()
+    model = models.pidnet.get_pred_model('pidnet-s', 19)
+    model = load_pretrained(model, '/home/oilter/Documents/SemanticSLAM/PIDNet/pretrained_models/cityscapes/PIDNet_S_Cityscapes_test.pt').cuda()
     model.eval()
     h = 0
     with torch.no_grad():
@@ -411,7 +419,7 @@ if __name__ == '__main__':
     #segment_folder_onnx(args)
 
     #transform2torch(args)
-    transform2oxnn(args)
-    #testonnx(args)
+    #transform2oxnn(args)
+    testonnx(args)
     #testPID(args)
     #testPID_prob(args)
